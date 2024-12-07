@@ -9,7 +9,7 @@ from datetime import datetime
 
 # Global Names
 global_title = "ScamGuard API"
-global_version = "1.0.0"
+global_version = "1.1.0"
 global_summary = "An API for interfacing with ScamGuard data"
 global_description = """
 # Info
@@ -48,11 +48,13 @@ class APIBan(BaseModel):
 class APIBanDetailed(APIBan):
   banned_on: Union[datetime, None] = None
   banned_by: str = "scamguard reviewer handle"
+  evidence_thread: Union[int, None] = None
   
   def Create(self, user_id:int=0):
     super().Create(user_id)
     self.banned_on = None
     self.banned_by = ""
+    self.evidence_thread = None
     return self
   
   def Execute(self):    
@@ -61,6 +63,7 @@ class APIBanDetailed(APIBan):
     
     if self.banned:
       self.banned_on = BanInfo.created_at
+      self.evidence_thread = BanInfo.evidence_thread
       self.banned_by = BanInfo.assigner_discord_user_name
       
     return self
