@@ -1,5 +1,8 @@
 {
   "name": "scamguard-token-checker",
   "version": "1.0.0",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "wrangler": "^3.103.2"
+  }
 }

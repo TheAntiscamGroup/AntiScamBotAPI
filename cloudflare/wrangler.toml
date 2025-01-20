@@ -6,3 +6,10 @@ preview_urls = false
 [observability]
 enabled = true
 head_sampling_rate = 0.5
+
+[vars]
+REQUIRE_AUTH = "true"
+
+[[kv_namespaces]]
+binding = "TOKEN_LIST"
+id = "6b2fc82222f24d07b37400a3fd752cab"
