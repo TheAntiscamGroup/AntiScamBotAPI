@@ -1,4 +1,4 @@
-name = "scamguard-token-checker"
+name = "scamguardapi"
 main = "worker.js"
 compatibility_date = "2023-08-23"
 preview_urls = false
