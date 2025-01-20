@@ -2,6 +2,7 @@ name = "scamguardapi"
 main = "worker.js"
 compatibility_date = "2023-08-23"
 preview_urls = false
+workers_dev = false
 
 [observability]
 enabled = true
