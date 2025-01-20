@@ -1,3 +1,8 @@
 name = "scamguard-token-checker"
 main = "worker.js"
 compatibility_date = "2023-08-23"
+preview_urls = false
+
+[observability]
+enabled = true
+head_sampling_rate = 0.5
