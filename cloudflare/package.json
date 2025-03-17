@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "wrangler": "^3.103.2"
+    "wrangler": "^4.0.0"
   }
 }
