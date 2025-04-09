@@ -8,30 +8,29 @@ export default {
       const cache = caches.default;
       let response = await cache.match(cacheKey);
       // Data is not in the cache already
-      if (!response)
-      {
+      if (!response) {
         // Fetch the request.
         response = await fetch(request);
-        console.log("Fetching Origin for Cache "+request.url);
+        console.log(`Fetching Origin for Cache ${request.url}`);
         // Cache it
         response = new Response(response.body, response);
         ctx.waitUntil(cache.put(cacheKey, response.clone()));
       }
       else
-        console.log("Data was in cache already for "+request.url);
+        console.log(`Data was in cache already for ${request.url}`);
   
       return response;
     }
 
     // Check if authorization is enabled
-    const authRequired = (env.REQUIRE_AUTH == "true");
+    const authRequired = (env.REQUIRE_AUTH === "true");
     if (authRequired === false) {
       return fetchCacheOrOrigin(request, ctx);
     }
     
     // Check for Auth Header
     const authHeader = request.headers.get("Authorization");
-    if (authHeader != null) {
+    if (authHeader !== null) {
       // Extract API Key
       const tokenCheck = authHeader.toString().replace("Bearer ", "");
       // Check if it exists
