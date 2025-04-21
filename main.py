@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.openapi.utils import get_openapi
 from fastapi.responses import FileResponse, RedirectResponse
 from typing import Union
 from DatabaseDriver import DatabaseDriver
@@ -9,7 +8,7 @@ from datetime import datetime
 
 # Global Names
 global_title = "ScamGuard API"
-global_version = "1.1.0"
+global_version = "1.1.1"
 global_summary = "An API for interfacing with ScamGuard data"
 global_description = """
 # Info
@@ -21,10 +20,12 @@ This API allows you to interface and query operational information about ScamGua
 If you would like to obtain an API Token, please send a message in the `#api-requests` channel of the [ScamGuard Discord server](https://scamguard.app/discord).
 
 """
+host_name = "api.scamguard.app"
 
-app = FastAPI(docs_url=None, redoc_url="/docs", description=global_description, title=global_title, summary=global_summary, 
-              contact={"name":"SocksTheWolf", "url":"https://socksthewolf.com/contact"}, terms_of_service="https://scamguard.app/terms", 
-              license_info={"name":"MIT License", "url":"https://github.com/SocksTheWolf/AntiScamBotAPI/blob/main/LICENSE"})
+app = FastAPI(docs_url=None, redoc_url="/docs", openapi_url="/openapi.json", description=global_description, title=global_title, summary=global_summary, 
+              contact={"name":"Support Contact", "url":"https://socksthewolf.com/contact"}, terms_of_service="https://scamguard.app/terms", 
+              license_info={"name":"MIT", "url":"https://github.com/SocksTheWolf/AntiScamBotAPI/blob/main/LICENSE"}, 
+              servers=[{"url": f"https://{host_name}", "description": "Production API"}], version=global_version)
 
 db = DatabaseDriver()
 
@@ -82,7 +83,7 @@ class APIAuthError(BaseModel):
 
 @app.get("/", include_in_schema=False, response_class=RedirectResponse, status_code=302)
 def main():
-  return "https://api.scamguard.app/docs"
+  return f"https://{host_name}/docs"
   
 @app.get("/check/{user_id}", description="Check if a Discord UserID is banned", response_model=APIBan, responses={403: {"model": APIAuthError}})
 def check_ban(user_id: int):
@@ -99,19 +100,3 @@ def get_ban_stats():
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
   return FileResponse("favicon.ico")
-
-
-def custom_openapi():
-  if app.openapi_schema:
-    return app.openapi_schema
-  openapi_schema = get_openapi(
-    title=global_title,
-    version=global_version,
-    summary=global_summary,
-    description=global_description,
-    routes=app.routes,
-  )
-  app.openapi_schema = openapi_schema
-  return app.openapi_schema
-  
-app.openapi = custom_openapi
