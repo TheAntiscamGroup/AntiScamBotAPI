@@ -85,7 +85,7 @@ class APIAuthError(BaseModel):
 
 @app.get("/", include_in_schema=False, response_class=RedirectResponse, status_code=302)
 def main():
-  return f"https://{host_name}/docs"
+  return f"https://{api_host_name}/docs"
   
 @app.get("/check/{user_id}", description="Check if a Discord UserID is banned", response_model=APIBan, responses={403: {"model": APIAuthError}})
 def check_ban(user_id: int):
