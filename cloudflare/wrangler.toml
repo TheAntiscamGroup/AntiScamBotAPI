@@ -6,7 +6,7 @@ workers_dev = false
 send_metrics = false
 
 [observability]
-enabled = true
+enabled = false
 head_sampling_rate = 0.5
 
 [vars]
