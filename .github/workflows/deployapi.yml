@@ -5,7 +5,10 @@ on:
       - main
     paths-ignore:
       - 'cloudflare/**'
-
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README.md'
+      - '.github/**'
       
   workflow_dispatch:
     inputs:
@@ -30,7 +33,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: production
-          onlyRemoveDeployments: true
         
   deploy:
     needs: cleanup
