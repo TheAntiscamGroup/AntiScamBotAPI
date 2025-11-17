@@ -1,14 +1,15 @@
 from DatabaseSchema import Ban
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, select, URL, desc, func
+from sqlalchemy import create_engine, select, URL, Engine, desc, func
 from sqlalchemy.orm import Session
 import os
+from typing import cast
 
 load_dotenv()
 
-# Mostly based off of the ScamGuard Database Option
+# Mostly based off of the ScamGuard Database Class
 class DatabaseDriver():
-  Database = None
+  Database:Session = None # pyright: ignore[reportAssignmentType]
 
   ### Initialization/Teardown ###
   def __init__(self, *args, **kwargs):
@@ -31,8 +32,8 @@ class DatabaseDriver():
 
   def Close(self):
     if (self.IsConnected()):
-      self.Database.get_bind().dispose()
-      self.Database = None
+      cast(Engine, self.Database.get_bind()).dispose()
+      self.Database = None # pyright: ignore[reportAttributeAccessIssue]
     
   def IsConnected(self) -> bool:
     if (self.Database is not None):
@@ -41,7 +42,7 @@ class DatabaseDriver():
 
   @staticmethod
   def GetDatabaseFile() -> str:
-    return os.getenv("DATABASE_FILE")
+    return os.getenv("DATABASE_FILE") or ""
 
   ### Lookup Data ###
   def DoesBanExist(self, TargetId:int) -> bool:
@@ -65,4 +66,4 @@ class DatabaseDriver():
 
   def GetNumBans(self) -> int:
     stmt = select(func.count()).select_from(Ban)
-    return self.Database.scalars(stmt).first()
+    return self.Database.scalars(stmt).first() or 0

@@ -7,25 +7,27 @@ from pydantic import BaseModel
 from datetime import datetime
 
 # Global Names
+host_name = "scamguard.app"
+api_host_name = f"api.{host_name}"
 global_title = "ScamGuard API"
 global_version = "1.1.1"
 global_summary = "An API for interfacing with ScamGuard data"
-global_description = """
+global_description = f"""
 # Info
 
 This API allows you to interface and query operational information about ScamGuard's database!
 
 **NOTE**: all API calls require an `Authorization: Bearer <token>` header, otherwise the request will fail. 
 
-If you would like to obtain an API Token, please send a message in the `#api-requests` channel of the [ScamGuard Discord server](https://scamguard.app/discord).
+If you would like to obtain an API Token, please send a message in the `#api-requests` channel of the [ScamGuard Discord server](https://{host_name}/discord).
 
 """
-host_name = "api.scamguard.app"
+
 
 app = FastAPI(docs_url=None, redoc_url="/docs", openapi_url="/openapi.json", description=global_description, title=global_title, summary=global_summary, 
-              contact={"name":"Support Contact", "url":"https://socksthewolf.com/contact"}, terms_of_service="https://scamguard.app/terms", 
+              contact={"name":"Support Contact", "url":"https://socksthewolf.com/contact"}, terms_of_service=f"https://{host_name}/terms", 
               license_info={"name":"MIT", "url":"https://github.com/SocksTheWolf/AntiScamBotAPI/blob/main/LICENSE"}, 
-              servers=[{"url": f"https://{host_name}", "description": "Production API"}], version=global_version)
+              servers=[{"url": f"https://{api_host_name}", "description": "Production API"}], version=global_version)
 
 db = DatabaseDriver()
 
@@ -47,9 +49,9 @@ class APIBan(BaseModel):
     return self
 
 class APIBanDetailed(APIBan):
-  banned_on: Union[datetime, None] = None
-  banned_by: str = "scamguard reviewer handle"
-  evidence_thread: Union[int, None] = None
+  banned_on:Union[datetime, None] = None
+  banned_by:str = "scamguard reviewer handle"
+  evidence_thread:Union[int, None] = None
   
   def Create(self, user_id:int=0):
     super().Create(user_id)
@@ -62,7 +64,7 @@ class APIBanDetailed(APIBan):
     BanInfo:Ban|None = db.GetBanInfo(self.user_id)
     super().ExecuteOnData(BanInfo)
     
-    if self.banned:
+    if self.banned and BanInfo is not None:
       self.banned_on = BanInfo.created_at
       self.evidence_thread = BanInfo.evidence_thread
       self.banned_by = BanInfo.assigner_discord_user_name
