@@ -16,4 +16,5 @@ Run with `fastapi run` or via the run script in the `.runtime` folder.
 
 ## Authentication
 
-Authorization is not natively provided in this app, however an implementation is provided via Cloudflare workers (see `cloudflare` directory). Auth keys do not expire (as they're really only implemented to prevent misuse).
+Authorization is not natively provided in this app, however an implementation is provided via Cloudflare workers (see `cloudflare` directory). 
+Auth keys do not expire (as they're really only implemented to prevent misuse).

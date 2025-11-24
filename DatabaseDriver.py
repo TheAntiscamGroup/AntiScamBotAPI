@@ -1,9 +1,9 @@
 from DatabaseSchema import Ban
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, select, URL, Engine, desc, func
+from sqlalchemy import create_engine, select, URL, Engine, func
 from sqlalchemy.orm import Session
-import os
 from typing import cast
+import os
 
 load_dotenv()
 

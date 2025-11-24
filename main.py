@@ -6,11 +6,14 @@ from DatabaseSchema import Ban
 from pydantic import BaseModel
 from datetime import datetime
 
-# Global Names
+# Application Config
 host_name = "scamguard.app"
 api_host_name = f"api.{host_name}"
+contact_url = "https://socksthewolf.com/contact"
+
+# API Naming Config
 global_title = "ScamGuard API"
-global_version = "1.1.1"
+global_version = "1.1.2"
 global_summary = "An API for interfacing with ScamGuard data"
 global_description = f"""
 # Info
@@ -25,7 +28,7 @@ If you would like to obtain an API Token, please send a message in the `#api-req
 
 
 app = FastAPI(redoc_url=None, openapi_url="/openapi.json", description=global_description, title=global_title, summary=global_summary, 
-              contact={"name":"Support Contact", "url":"https://socksthewolf.com/contact"}, terms_of_service=f"https://{host_name}/terms", 
+              contact={"name":"Support Contact", "url":contact_url}, terms_of_service=f"https://{host_name}/terms", 
               license_info={"name":"MIT", "url":"https://github.com/SocksTheWolf/AntiScamBotAPI/blob/main/LICENSE"}, 
               servers=[{"url": f"https://{api_host_name}", "description": "Production API"}], version=global_version)
 
