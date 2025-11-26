@@ -10,7 +10,7 @@ async function fetchCacheOrOrigin(request, ctx) {
   // Data is not in the cache already
   if (!response) {
     // Fetch the request.
-    response = await fetch(request);
+    response = await fetch(request, );
     console.log(`Fetching Origin for Cache ${cacheUrl.toString()}`);
     // Cache it
     response = new Response(response.body, response);
@@ -23,11 +23,17 @@ async function fetchCacheOrOrigin(request, ctx) {
 };
 
 export class APILookup extends WorkerEntrypoint {
+  makeRequest(url) {
+    return new Request(url, {headers: {
+      "Authorization": `Bearer ${this.env.SERVICE_LOOKUP_KEY}`
+    }});
+  };
   async checkAccount(account) {
     if (account == 0) {
       return {"valid": false};
     }
-    const request = await fetchCacheOrOrigin(`https://api.scamguard.app/check/${account}`);
+
+    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/check/${account}`), this.ctx);
     if (request.ok)
       return await request.json();
 
@@ -37,13 +43,13 @@ export class APILookup extends WorkerEntrypoint {
     if (account == 0) {
       return {"valid": false};
     }
-    const request = await fetchCacheOrOrigin(`https://api.scamguard.app/ban/${account}`);
+    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/ban/${account}`), this.ctx);
     if (request.ok)
       return await request.json();
     return {"valid": false};
   };
   async getBanStats() {
-    const request = await fetchCacheOrOrigin(`https://api.scamguard.app/bans`);
+    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/bans`), this.ctx);
     if (request.ok)
       return await request.json();
     return {};
@@ -57,7 +63,7 @@ export default class extends WorkerEntrypoint {
     if (authRequired === false) {
       return fetchCacheOrOrigin(request, this.ctx);
     }
-    
+
     // Check for Auth Header
     const authHeader = request.headers.get("Authorization");
     if (authHeader !== null) {
