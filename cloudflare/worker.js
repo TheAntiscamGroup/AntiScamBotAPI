@@ -37,10 +37,10 @@ export class APILookup extends WorkerEntrypoint {
   };
   async getBanStats() {
     return await fetchCacheOrOrigin(`https://api.scamguard.app/bans`).json();
-  }
+  };
 };
 
-export default {
+export default class extends WorkerEntrypoint {
   async fetch(request, env, ctx) {
     // Check if authorization is enabled
     const authRequired = (env.REQUIRE_AUTH === "true");
@@ -69,5 +69,5 @@ export default {
       status: 403,
       headers: new Headers({"content-type": "application/json"})
     });
-  },
+  };
 };
