@@ -28,25 +28,21 @@ export class APILookup extends WorkerEntrypoint {
       "Authorization": `Bearer ${this.env.SERVICE_LOOKUP_KEY}`
     }});
   };
-  async checkAccount(account) {
-    if (account == 0) {
+  async makeSGRequest(type, account) {
+    if (account == "" || account == "0") {
       return {"valid": false};
     }
-
-    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/check/${account}`), this.ctx);
+    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/${type}/${account}`), this.ctx);
     if (request.ok)
       return await request.json();
 
     return {"valid": false};
+  }
+  async checkAccount(account) {
+    return await this.makeSGRequest("check", account);
   };
   async getBanDetails(account) {
-    if (account == 0) {
-      return {"valid": false};
-    }
-    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/ban/${account}`), this.ctx);
-    if (request.ok)
-      return await request.json();
-    return {"valid": false};
+    return await this.makeSGRequest("ban", account);
   };
   async getBanStats() {
     const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/bans`), this.ctx);
