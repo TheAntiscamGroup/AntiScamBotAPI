@@ -3,7 +3,7 @@ import { WorkerEntrypoint } from "cloudflare:workers";
 // Function for getting a request from the cache or going to origin.
 async function fetchCacheOrOrigin(request, ctx) {
   // Check if data is in cache
-  const cacheUrl = typeof request == 'string' ? new URL(request) : new URL(request.url);
+  const cacheUrl = typeof request === 'string' ? new URL(request) : new URL(request.url);
   const cacheKey = new Request(cacheUrl.toString());
   const cache = caches.default;
   let response = await cache.match(cacheKey);
@@ -25,13 +25,13 @@ async function fetchCacheOrOrigin(request, ctx) {
 export class APILookup extends WorkerEntrypoint {
   async checkAccount(account) {
     if (account == 0) {
-      return {};
+      return {"valid": false};
     }
     return await fetchCacheOrOrigin(`https://api.scamguard.app/check/${account}`).json();
   };
   async getBanDetails(account) {
     if (account == 0) {
-      return {};
+      return {"valid": false};
     }
     return await fetchCacheOrOrigin(`https://api.scamguard.app/ban/${account}`).json();
   };
@@ -43,9 +43,9 @@ export class APILookup extends WorkerEntrypoint {
 export default class extends WorkerEntrypoint {
   async fetch(request, env, ctx) {
     // Check if authorization is enabled
-    const authRequired = (env.REQUIRE_AUTH === "true");
+    const authRequired = (this.env.REQUIRE_AUTH === "true");
     if (authRequired === false) {
-      return fetchCacheOrOrigin(request, ctx);
+      return fetchCacheOrOrigin(request, this.ctx);
     }
     
     // Check for Auth Header
@@ -56,11 +56,11 @@ export default class extends WorkerEntrypoint {
       // Make sure it's in the right format of Bearer <token>
       if (tokenHolder.length >= 2) {
         // Check if this token exists
-        let task = await env.TOKEN_LIST.get(tokenHolder[1]);
+        let task = await this.env.TOKEN_LIST.get(tokenHolder[1]);
         
         // Key is valid!
         if (task)
-          return await fetchCacheOrOrigin(request, ctx);
+          return await fetchCacheOrOrigin(request, this.ctx);
       }
     }
 
