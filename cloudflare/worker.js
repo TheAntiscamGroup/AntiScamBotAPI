@@ -30,13 +30,13 @@ export class APILookup extends WorkerEntrypoint {
   };
   async makeSGRequest(type, account) {
     if (account == "" || account == "0") {
-      return {"valid": false};
+      return {valid: false};
     }
     const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/${type}/${account}`), this.ctx);
     if (request.ok)
       return await request.json();
-
-    return {"valid": false};
+    else
+      return {valid: false, error: true, status: request.status, code: request.code};
   }
   async checkAccount(account) {
     return await this.makeSGRequest("check", account);
@@ -48,7 +48,8 @@ export class APILookup extends WorkerEntrypoint {
     const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/bans`), this.ctx);
     if (request.ok)
       return await request.json();
-    return {};
+    else
+      return {error: true, status: request.status, code: request.code };
   };
 };
 
