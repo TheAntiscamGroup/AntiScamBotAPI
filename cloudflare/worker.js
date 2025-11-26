@@ -27,16 +27,16 @@ export class APILookup extends WorkerEntrypoint {
     if (account == 0) {
       return {};
     }
-    return await fetchCacheOrOrigin(`https://api.scamguard.app/check/${account}`);
+    return await fetchCacheOrOrigin(`https://api.scamguard.app/check/${account}`).json();
   };
   async getBanDetails(account) {
     if (account == 0) {
       return {};
     }
-    return await fetchCacheOrOrigin(`https://api.scamguard.app/ban/${account}`);
+    return await fetchCacheOrOrigin(`https://api.scamguard.app/ban/${account}`).json();
   };
   async getBanStats() {
-    return await fetchCacheOrOrigin(`https://api.scamguard.app/bans`);
+    return await fetchCacheOrOrigin(`https://api.scamguard.app/bans`).json();
   }
 };
 
