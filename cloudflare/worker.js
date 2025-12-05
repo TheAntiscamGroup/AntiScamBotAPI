@@ -16,8 +16,6 @@ async function fetchCacheOrOrigin(request, ctx) {
     response = new Response(response.body, response);
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
   }
-  else
-    console.log(`Data was in cache already for ${cacheUrl.toString()}`);
 
   return response;
 };
