@@ -15,3 +15,6 @@ REQUIRE_AUTH = "true"
 [[kv_namespaces]]
 binding = "TOKEN_LIST"
 id = "6b2fc82222f24d07b37400a3fd752cab"
+
+[placement]
+mode = "smart"
