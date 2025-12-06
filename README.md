@@ -1,7 +1,6 @@
 # AntiScamBotAPI
-API for querying ScamBot via HTTP Get.
 
-This allows you to have a publicly accessible API to your [AntiScamBot](https://github.com/theantiscamgroup/AntiScamBot) installation.
+This allows you to have a publicly accessible API to your [AntiScamBot](https://github.com/theantiscamgroup/AntiScamBot) installation over HTTP GET.
 
 ## Setup
 
@@ -9,9 +8,10 @@ This setup assumes you know how to [setup a python virtual environment already](
 
 Clone the project somewhere that can access your AntiScamBot database file, and then create an .env with the following information
 
-```
+```plaintext
 DATABASE_FILE="PATH TO DATABASE FILE"
 ```
+
 Run with `fastapi run` or via the run script in the `.runtime` folder.
 
 ## Authentication
