@@ -34,7 +34,7 @@ class DatabaseDriver():
     if (self.IsConnected()):
       cast(Engine, self.Database.get_bind()).dispose()
       self.Database = None # pyright: ignore[reportAttributeAccessIssue]
-    
+
   def IsConnected(self) -> bool:
     if (self.Database is not None):
       return True
@@ -48,7 +48,7 @@ class DatabaseDriver():
   def DoesBanExist(self, TargetId:int) -> bool:
     if (TargetId <= 0):
       return False
-      
+
     stmt = select(Ban).where(Ban.discord_user_id==TargetId)
     result = self.Database.scalars(stmt).first()
 
@@ -60,7 +60,7 @@ class DatabaseDriver():
   def GetBanInfo(self, TargetId:int) -> Ban|None:
     if (TargetId <= 0):
       return None
-    
+
     stmt = select(Ban).where(Ban.discord_user_id==TargetId)
     return self.Database.scalars(stmt).first()
 

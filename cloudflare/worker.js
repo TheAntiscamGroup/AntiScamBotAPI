@@ -68,7 +68,7 @@ export default class extends WorkerEntrypoint {
       if (tokenHolder.length >= 2) {
         // Check if this token exists
         let task = await this.env.TOKEN_LIST.get(tokenHolder[1]);
-        
+
         // Key is valid!
         if (task)
           return await fetchCacheOrOrigin(request, this.ctx);
