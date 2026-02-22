@@ -14,7 +14,7 @@ contact_url = "https://socksthewolf.com/contact"
 
 # API Naming Config
 global_title = f"{service_name} API"
-global_version = "1.1.3"
+global_version = "1.1.4"
 global_summary = f"An API for interfacing with {service_name} data"
 global_description = f"""
 # Info
@@ -38,11 +38,14 @@ db = DatabaseDriver()
 class APIBan(BaseModel):
   banned: bool = False
   user_id: int = 0
+  user_id_str: str = ""
   valid: bool = False
 
   def Create(self, user_id:int=0):
     self.user_id = user_id
     self.valid = (user_id >= 1)
+    if (self.valid):
+      self.user_id_str = str(user_id)
     return self
 
   def Execute(self):
@@ -53,9 +56,10 @@ class APIBan(BaseModel):
     return self
 
 class APIBanDetailed(APIBan):
-  banned_on:Union[datetime, None] = None
-  banned_by:str = f"{service_name} reviewer handle"
-  evidence_thread:Union[int, None] = None
+  banned_on: Union[datetime, None] = None
+  banned_by: str = f"{service_name} reviewer handle"
+  evidence_thread: Union[int, None] = None
+  evidence_thread_str: Union[str, None] = None
 
   def Create(self, user_id:int=0):
     super().Create(user_id)
@@ -71,6 +75,7 @@ class APIBanDetailed(APIBan):
     if self.banned and BanInfo is not None:
       self.banned_on = BanInfo.created_at
       self.evidence_thread = BanInfo.evidence_thread
+      self.evidence_thread_str = str(self.evidence_thread)
       self.banned_by = BanInfo.assigner_discord_user_name
 
     return self
