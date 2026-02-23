@@ -113,7 +113,7 @@ async def docs_output(req: Request):
   return get_swagger_ui_html(
       openapi_url=app.openapi_url,
       title=app.title,
-      swagger_favicon_url=f"https://{host_name}/favicon.png",
+      swagger_favicon_url="/favicon.png",
       swagger_ui_parameters=app.swagger_ui_parameters,
   )
 
