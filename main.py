@@ -113,7 +113,7 @@ async def docs_output(req: Request):
   return get_swagger_ui_html(
       openapi_url=app.openapi_url,
       title=app.title,
-      swagger_favicon_url="/favicon.png",
+      swagger_favicon_url=f"https://{host_name}/favicon.png",
       swagger_ui_parameters=app.swagger_ui_parameters,
   )
 
@@ -137,10 +137,6 @@ async def validation_exception_handler(request, exc: RequestValidationError):
       message += f"[Field: {error['loc']}, Error: {error['msg']}] "
   ErrObj = jsonable_encoder(APIInvalidData().Execute(message))
   return JSONResponse(content=ErrObj, status_code=422)
-
-@app.get('/favicon.png', include_in_schema=False)
-async def favicon():
-  return FileResponse("favicon.png")
 
 @app.get('/openapi.json', include_in_schema=False)
 async def openapi():
