@@ -1,4 +1,4 @@
 fastapi[standard]
 sqlalchemy
 sqlalchemy.orm
-python-dotenv==1.2.1
+python-dotenv==1.2.2
