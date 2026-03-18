@@ -50,7 +50,7 @@ jobs:
         ref: ${{ github.ref }}
 
     - name: Dependency Update Check
-      uses: dorny/paths-filter@v3.0.2
+      uses: dorny/paths-filter@v4.0.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -63,7 +63,7 @@ jobs:
 
     # Adding the Private key to a Github Actions Workflow
     - name: Install SSH Key
-      uses: webfactory/ssh-agent@v0.9.1
+      uses: webfactory/ssh-agent@v0.10.0
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         log-public-key: false
