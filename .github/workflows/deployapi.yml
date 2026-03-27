@@ -83,7 +83,7 @@ jobs:
       env:
         SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_USER: ${{ secrets.SSH_USER }}
+        SSH_USER: ${{ secrets.SSH_USERNAME }}
 
       # If any runtime files updated, then we need to stop all bot instances.
     - name: Kill Running Instances
