@@ -60,14 +60,6 @@ jobs:
           core_updated:
             - '**.py'
 
-    # Adding the Private key to a Github Actions Workflow
-    - name: Install SSH Key
-      if: false
-      uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        log-public-key: false
-
     - name: Configure SSH
       run: |
         mkdir -p ~/.ssh/
