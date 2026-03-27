@@ -110,4 +110,5 @@ jobs:
 
     # Remove the key once done
     - name: Kill SSH Add
+      if: ${{ always() }}
       run: rm -f ~/.ssh/staging.key
