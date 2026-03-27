@@ -81,9 +81,9 @@ jobs:
           StrictHostKeyChecking no
         END
       env:
-        SSH_HOST: ${{secrets.SSH_HOST}}
-        SSH_KEY: ${{secrets.SSH_KEY}}
-        SSH_USER: ${{secrets.SSH_USERNAME}}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_USER: ${{ secrets.SSH_USERNAME }}
 
       # If any runtime files updated, then we need to stop all bot instances.
     - name: Kill Running Instances
