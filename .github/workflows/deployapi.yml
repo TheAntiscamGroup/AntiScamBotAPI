@@ -94,7 +94,7 @@ jobs:
 
     # We want to update the project regardless.
     - name: Sync Project
-      run: ssh staging 'cd ~/project/AntiScamBotAPI && ./update.sh'
+      run: ssh staging 'cd ~/project/AntiScamBotAPI && .runtime/pull.sh'
 
     # attempt to update any python dependencies
     - name: Update Python Dependencies
