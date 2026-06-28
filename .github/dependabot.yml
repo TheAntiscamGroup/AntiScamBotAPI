@@ -32,7 +32,7 @@ updates:
       interval: "weekly"
     registries:
       - python
-    unexpected_external_code: allow
+    insecure-external-code-execution: allow
     cooldown:
       default-days: 10
       semver-major-days: 30
