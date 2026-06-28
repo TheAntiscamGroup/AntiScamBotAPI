@@ -1,15 +1,27 @@
 version: 2
+registries:
+  npm:
+    type: "npm-registry"
+    url: "https://registry.npmjs.org"
+    token: ${{secrets.GH_DUMMY}}
+    replaces-base: true
+  python:
+    type: "python-index"
+    url: "https://pypi.org"
+    token: ${{secrets.GH_DUMMY}}
+    replaces-base: true
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/cloudflare" # Location of package manifests
     schedule:
       interval: "weekly"
     cooldown:
-      default-days: 7
+      default-days: 10
       semver-major-days: 30
       semver-minor-days: 12
-      semver-patch-days: 7
-    open-pull-requests-limit: 1
+    registries:
+      - npm
+    open-pull-requests-limit: 2
     ignore:
       - dependency-name: 'wrangler'
 
@@ -17,11 +29,12 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    registries:
+      - python
     cooldown:
-      default-days: 7
+      default-days: 10
       semver-major-days: 30
       semver-minor-days: 12
-      semver-patch-days: 7
 
   - package-ecosystem: "github-actions"
     directory: "/"
