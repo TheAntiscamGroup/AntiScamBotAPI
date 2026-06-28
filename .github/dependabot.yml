@@ -7,8 +7,9 @@ registries:
     replaces-base: true
   python:
     type: "python-index"
-    url: "https://pypi.org/simple"
-    token: ${{secrets.GH_DUMMY}}
+    url: "https://pypi.python.org/simple/"
+    username: username
+    password: password
     replaces-base: true
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
