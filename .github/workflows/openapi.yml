@@ -36,6 +36,7 @@ jobs:
     needs: clean_deploys
     continue-on-error: true
     name: Update OpenAPI Data
+    environment: openapi
     permissions: {}
     steps:
       - name: Fetch Current OpenAPI Structure
