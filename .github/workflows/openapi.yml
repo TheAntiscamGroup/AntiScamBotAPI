@@ -1,0 +1,52 @@
+name: Update OpenAPI Spec
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "main.py"
+      - "requirements.txt"
+      - ".github/workflows/openapi.yml"
+  workflow_dispatch: {}
+
+concurrency:
+  group: openapi
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  clean_deploys:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    name: Clean Old Github OpenAPI Deploys
+    permissions:
+      deployments: write
+    steps:
+      - name: Cleanup Previous Deploys
+        uses: strumwolf/delete-deployment-environment@035f6d27c8b8951729f4d71b2d3d6a7975139476
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: openapi
+          onlyRemoveDeployments: true
+  make_openapi:
+    runs-on: ubuntu-latest
+    needs: clean_deploys
+    continue-on-error: true
+    name: Update OpenAPI Data
+    permissions: {}
+    steps:
+      - name: Fetch Current OpenAPI Structure
+        run: curl --no-progress-meter --output openapi.json "https://api.scamguard.app/openapi.json"
+      - name: Upload to cloudflare
+        if: success()
+        uses: socksthewolf/cloudflare-upload-spec@4aa5efd32ce6fc898dcb794ccd7e3001568cce10
+        with:
+          zone_id: ${{ vars.CLOUDFLARE_ZONE }}
+          api_token: ${{ secrets.CLOUDFLARE_TOKEN }}
+          delete_others: true
+      - name: Check Output
+        if: always()
+        run: ls -lh
