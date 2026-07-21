@@ -34,7 +34,6 @@ jobs:
   make_openapi:
     runs-on: ubuntu-latest
     needs: clean_deploys
-    continue-on-error: true
     name: Update OpenAPI Data
     environment: openapi
     permissions: {}
@@ -48,6 +47,3 @@ jobs:
           zone_id: ${{ vars.CLOUDFLARE_ZONE }}
           api_token: ${{ secrets.CLOUDFLARE_TOKEN }}
           delete_others: true
-      - name: Check Output
-        if: always()
-        run: ls -lh
