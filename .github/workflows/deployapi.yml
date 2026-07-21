@@ -9,6 +9,8 @@ on:
       - 'LICENSE'
       - 'README.md'
       - '.github/**'
+      - '!.github/workflows/deployapi.yml'
+      - '!.github/filters.yml'
 
   workflow_dispatch:
     inputs:
