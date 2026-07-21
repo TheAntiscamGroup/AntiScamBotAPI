@@ -18,6 +18,7 @@ on:
             description: 'Restart API'
             required: true
             type: boolean
+            default: false
 
 # Prevent multiple instances of this action from running at once
 concurrency:
@@ -38,9 +39,9 @@ jobs:
         id: solver
         run: |
           if $HAS_INPUT; then
-            echo restart="${{ github.event.inputs.restart_bot }}" >> $GITHUB_OUTPUT
+            echo "restart=${{ github.event.inputs.restart_bot }}" >> "$GITHUB_OUTPUT"
           else
-            echo restart="false" >> $GITHUB_OUTPUT
+            echo "restart=false" >> "$GITHUB_OUTPUT"
           fi
         env:
           HAS_INPUT: ${{ github.event.inputs.restart_bot != '' }}
