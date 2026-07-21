@@ -45,6 +45,7 @@ jobs:
           fi
         env:
           HAS_INPUT: ${{ github.event.inputs.restart_bot != '' }}
+      - run: echo ${{ steps.solver.outputs.restart }}
   deploy:
     needs: workflow_check
     uses: theantiscamgroup/workflows/.github/workflows/deploy_bot.yml@main
@@ -52,4 +53,4 @@ jobs:
     with:
       ref: ${{ github.ref }}
       path: "~/project/AntiScamBotAPI"
-      force_restart: ${{ needs.workflow_check.outputs.should_restart }}
+      force_restart: ${{ needs.workflow_check.outputs.should_restart == 'true' }}
