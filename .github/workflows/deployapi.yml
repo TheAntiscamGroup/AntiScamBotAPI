@@ -32,5 +32,5 @@ jobs:
     secrets: inherit
     with:
       ref: ${{ github.ref }}
-      path: "~/project/AntiScamBot"
+      path: "~/project/AntiScamBotAPI"
       force_restart: ${{ inputs.restart_bot }}
