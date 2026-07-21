@@ -1,0 +1,5 @@
+deps_update_needed:
+  - 'requirements.txt'
+  - '.runtime/update.sh'
+core_updated:
+  - '**.py'

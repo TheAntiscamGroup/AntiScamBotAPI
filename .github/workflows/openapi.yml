@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   make_openapi:
-    uses: socksthewolf/workflows/.github/workflows/openapi.yml@main
+    uses: theantiscamgroup/workflows/.github/workflows/openapi.yml@main
     with:
       is_download: true
       clean_deploys: true
