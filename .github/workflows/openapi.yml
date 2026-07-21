@@ -6,7 +6,6 @@ on:
     paths:
       - "main.py"
       - "requirements.txt"
-      - ".github/workflows/openapi.yml"
   workflow_dispatch: {}
 
 concurrency:
@@ -26,6 +25,4 @@ jobs:
       clean_deploys: true
       download_uri: "https://api.scamguard.app/openapi.json"
       ref: ${{ github.ref }}
-    # This probably will not work properly because of the org differences, but w/e
-    # We can probably get around this by just forking the repo
     secrets: inherit
