@@ -29,10 +29,26 @@ permissions:
   contents: read
 
 jobs:
+  workflow_check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_restart: ${{ steps.solver.outputs.restart }}
+    steps:
+      - name: Dispatch Input Solver
+        id: solver
+        run: |
+          if $HAS_INPUT; then
+            echo restart=${{ github.event.inputs.restart_bot }} >> $GITHUB_OUTPUT
+          else
+            echo restart=false >> $GITHUB_OUTPUT
+          fi
+        env:
+          HAS_INPUT: ${{ github.event.inputs.restart_bot != '' }}
   deploy:
+    needs: workflow_check
     uses: theantiscamgroup/workflows/.github/workflows/deploy_bot.yml@main
     secrets: inherit
     with:
       ref: ${{ github.ref }}
       path: "~/project/AntiScamBotAPI"
-      force_restart: ${{ github.event.inputs.restart_bot || false }}
+      force_restart: ${{ needs.workflow_check.outputs.should_restart }}
