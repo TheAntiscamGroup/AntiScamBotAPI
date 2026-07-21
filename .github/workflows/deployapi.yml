@@ -9,7 +9,6 @@ on:
       - 'LICENSE'
       - 'README.md'
       - '.github/**'
-      - '!.github/workflows/deployapi.yml'
       - '!.github/filters.yml'
 
   workflow_dispatch:
@@ -30,12 +29,14 @@ permissions:
   contents: read
 
 jobs:
+  # Need to convert this input so that it's uniform, because default wasn't working
   workflow_check:
+    name: Handle Workflow Input
     runs-on: ubuntu-latest
     outputs:
       should_restart: ${{ steps.solver.outputs.restart }}
     steps:
-      - name: Dispatch Input Solver
+      - name: Need Force Restart Check
         id: solver
         run: |
           if $HAS_INPUT; then
@@ -45,8 +46,10 @@ jobs:
           fi
         env:
           HAS_INPUT: ${{ github.event.inputs.restart_bot != '' }}
-      - run: echo ${{ steps.solver.outputs.restart }}
+      - name: Check Output
+        run: echo ${{ steps.solver.outputs.restart }}
   deploy:
+    name: Deploy Bot
     needs: workflow_check
     uses: theantiscamgroup/workflows/.github/workflows/deploy_bot.yml@main
     secrets: inherit
