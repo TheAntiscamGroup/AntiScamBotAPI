@@ -13,11 +13,11 @@ on:
 
   workflow_dispatch:
     inputs:
-        restart_bot:
-            description: 'Restart API'
-            required: true
-            type: boolean
-            default: false
+      restart_bot:
+        description: 'Restart API'
+        required: true
+        type: boolean
+        default: false
 
 # Prevent multiple instances of this action from running at once
 concurrency:
