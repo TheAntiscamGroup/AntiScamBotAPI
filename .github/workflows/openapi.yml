@@ -19,10 +19,10 @@ permissions:
 
 jobs:
   make_openapi:
-    uses: theantiscamgroup/workflows/.github/workflows/openapi.yml@main
+    uses: theantiscamgroup/workflows/.github/workflows/build_openapi.yml@main
+    secrets: inherit
     with:
       is_download: true
       clean_deploys: true
       download_uri: "https://api.scamguard.app/openapi.json"
       ref: ${{ github.ref }}
-    secrets: inherit
