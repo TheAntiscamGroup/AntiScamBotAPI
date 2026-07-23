@@ -13,7 +13,7 @@ registries:
     replaces-base: true
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/cloudflare" # Location of package manifests
+    directory: "./cloudflare" # Location of package manifests
     schedule:
       interval: "weekly"
     cooldown:
