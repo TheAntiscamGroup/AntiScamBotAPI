@@ -1,0 +1,82 @@
+name: Deploy API Project
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "*.py"
+      - "requirements.txt"
+      - ".runtime/**"
+      - ".github/workflows/filters.yml"
+      - ".github/workflows/deploy.yml"
+
+  workflow_dispatch:
+    inputs:
+      restart_bot:
+        description: 'Restart API'
+        required: true
+        type: boolean
+        default: false
+
+# Prevent multiple instances of this action from running at once
+concurrency:
+  group: "deploy"
+  cancel-in-progress: false
+
+permissions:
+  deployments: write
+  contents: read
+  actions: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    name: Deploy Bot
+    uses: theantiscamgroup/workflows/.github/workflows/deploy_bot.yml@main
+    secrets: inherit
+    with:
+      ref: ${{ github.ref }}
+      path: "~/project/AntiScamBotAPI"
+      force_restart: ${{ github.event.inputs.restart_bot == 'true' }}
+
+  # If we restarted the bot, we should go ahead and clear the API cache
+  cache_kill:
+    needs: deploy
+    if: ${{ needs.deploy.outputs.restarted == 'true' }}
+    name: Clear Cache if Restarted
+    uses: theantiscamgroup/workflows/.github/workflows/clear_cache.yml@main
+    secrets: inherit
+    with:
+      paths: |
+        "https://api.scamguard.app/openapi.json"
+
+  # This will wait conditionally for the cache to be ready after the bot has been deployed
+  # If it hasn't been redeployed, then it will continue immediately.
+  wait_for_cache:
+    needs: deploy
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    name: Wait
+    steps:
+        # Sleep if we were restarted
+      - name: Sleep for Cache Clear
+        if: ${{ needs.deploy.outputs.restarted == 'true' }}
+        run: sleep 60
+      - name: Continue Operation
+        run: echo "Done Waiting!"
+
+  make_openapi:
+    name: OpenAPI
+    # This way we do not get stuck if the bot wasn't restarted
+    # So we can always have the most up to date spec
+    needs: wait_for_cache
+    uses: theantiscamgroup/workflows/.github/workflows/build_openapi.yml@main
+    secrets: inherit
+    with:
+      is_download: true
+      clean_deploys: true
+      download_uri: "https://api.scamguard.app/openapi.json"
+      ref: ${{ github.ref }}
