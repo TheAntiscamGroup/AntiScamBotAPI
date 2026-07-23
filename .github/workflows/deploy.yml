@@ -63,10 +63,10 @@ jobs:
     name: Wait
     steps:
         # Sleep if we were restarted
-      - name: Sleep for Cache Clear
+      - name: Sleep
         if: ${{ needs.deploy.outputs.restarted == true }}
         run: sleep 60
-      - name: Continue Operation
+      - name: Continue
         run: echo "Done Waiting!"
 
   make_openapi:
