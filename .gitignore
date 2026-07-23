@@ -162,5 +162,5 @@ cython_debug/
 #.idea/
 
 # npm files
-/cloudflare/node_modules
-/cloudflare/.wrangler
+node_modules/
+.wrangler
