@@ -14,10 +14,11 @@ service_name = "ScamGuard"
 host_name = "scamguard.app"
 api_host_name = f"api.{host_name}"
 contact_url = "https://socksthewolf.com/contact"
+license_url = "https://github.com/theantiscamgroup/AntiScamBotAPI/blob/main/LICENSE"
 
 # API Naming Config
 global_title = f"{service_name} API"
-global_version = "1.1.4"
+global_version = "1.1.5"
 global_summary = f"An API for interfacing with {service_name} data"
 global_description = f"""
 # Info
@@ -33,7 +34,7 @@ If you would like to obtain an API Token, please send a message in the `#api-req
 
 app = FastAPI(redoc_url=None, docs_url=None, openapi_url="/openapi.json", description=global_description, title=global_title, summary=global_summary,
               contact={"name":"Support Contact", "url":contact_url}, terms_of_service=f"https://{host_name}/terms",
-              license_info={"name":"MIT", "url":"https://github.com/theantiscamgroup/AntiScamBotAPI/blob/main/LICENSE"},
+              license_info={"name":"MIT", "url":f"https://{api_host_name}/license"},
               servers=[{"url": f"https://{api_host_name}", "description": "Production API"}], version=global_version)
 
 db = DatabaseDriver()
@@ -109,9 +110,10 @@ def main():
   return f"https://{api_host_name}/docs"
 
 @app.get("/docs", include_in_schema=False)
-async def docs_output(req: Request):
+async def docs_output(_req: Request):
+  url = app.openapi_url if app.openapi_url is not None else ""
   return get_swagger_ui_html(
-      openapi_url=app.openapi_url,
+      openapi_url=url,
       title=app.title,
       swagger_favicon_url="/favicon.png",
       swagger_ui_parameters=app.swagger_ui_parameters,
@@ -141,3 +143,7 @@ async def validation_exception_handler(request, exc: RequestValidationError):
 @app.get('/openapi.json', include_in_schema=False)
 async def openapi():
   return FileResponse("openapi.json")
+
+@app.get('/license', include_in_schema=False)
+async def license():
+  return RedirectResponse(url=license_url)
