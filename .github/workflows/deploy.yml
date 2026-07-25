@@ -46,7 +46,7 @@ jobs:
   # If we restarted the bot, we should go ahead and clear the API cache
   cache_kill:
     needs: deploy
-    if: ${{ needs.deploy.outputs.restarted == true }}
+    if: ${{ needs.deploy.outputs.restarted == 'true' }}
     name: Clear Cache if Restarted
     uses: theantiscamgroup/workflows/.github/workflows/clear_cache.yml@main
     secrets: inherit
@@ -64,7 +64,7 @@ jobs:
     steps:
         # Sleep if we were restarted
       - name: Sleep
-        if: ${{ needs.deploy.outputs.restarted == true }}
+        if: ${{ needs.deploy.outputs.restarted == 'true' }}
         run: sleep 60
       - name: Continue
         run: echo "Done Waiting!"

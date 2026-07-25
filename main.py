@@ -13,7 +13,7 @@ from datetime import datetime
 service_name = "ScamGuard"
 host_name = "scamguard.app"
 api_host_name = f"api.{host_name}"
-contact_url = "https://socksthewolf.com/contact"
+contact_url = f"https://{host_name}/contact"
 license_url = "https://github.com/theantiscamgroup/AntiScamBotAPI/blob/main/LICENSE"
 
 # API Naming Config
