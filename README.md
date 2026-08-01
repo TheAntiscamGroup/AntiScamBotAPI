@@ -1,6 +1,6 @@
 # AntiScamBotAPI
 
-This allows you to have a publicly accessible API to your [AntiScamBot](https://github.com/theantiscamgroup/AntiScamBot) installation over HTTP GET.
+This allows you to have a publicly accessible API to your [AntiScamBot](https://github.com/theantiscamgroup/AntiScamBot) installation over HTTP requests.
 
 ## Setup
 
