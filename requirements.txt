@@ -1,4 +1,3 @@
-fastapi[standard]
-sqlalchemy
-sqlalchemy.orm
+fastapi[standard]==0.141.1
+sqlalchemy==2.0.51
 python-dotenv==1.2.2
