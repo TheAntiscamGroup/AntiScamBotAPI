@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "license": "MIT",
   "devDependencies": {
-    "wrangler": "^4.116.0"
+    "wrangler": "^4.118.0"
+  },
+  "overrides": {
+    "wrangler": {
+      "undici": "^7.29.0"
+    }
   }
 }
