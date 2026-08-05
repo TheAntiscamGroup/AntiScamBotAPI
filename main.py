@@ -18,7 +18,7 @@ license_url = "https://github.com/theantiscamgroup/AntiScamBotAPI/blob/main/LICE
 
 # API Naming Config
 global_title = f"{service_name} API"
-global_version = "1.1.5"
+global_version = "1.1.6"
 global_summary = f"An API for interfacing with {service_name} data"
 global_description = f"""
 # Info
@@ -86,12 +86,20 @@ class APIBanDetailed(APIBan):
 
     return self
 
-class APIStats(BaseAPIResponse):
+class APIBans(BaseAPIResponse):
   count: int = 0
 
   def Execute(self):
     self.valid = True
     self.count = db.GetNumBans()
+    return self
+
+class APIStats(APIBans):
+  installs: int = 0
+
+  def Execute(self):
+    super().Execute()
+    self.installs = 0
     return self
 
 class APIAuthError(BaseAPIResponse):
@@ -127,8 +135,12 @@ def check_ban(user_id: int):
 def get_ban_info(user_id: int):
   return APIBanDetailed().Create(user_id).Execute()
 
-@app.get("/bans", description="Get Number of All Bans", response_model=APIStats, responses={403: {"model": APIAuthError}})
+@app.get("/bans", description="Get Number of All Bans", deprecated=True, response_model=APIBans, responses={403: {"model": APIAuthError}})
 def get_ban_stats():
+   return APIBans().Execute()
+
+@app.get("/stats", description="Get Bot Stats", response_model=APIStats, responses={403: {"model": APIAuthError}})
+def get_bot_stats():
    return APIStats().Execute()
 
 
