@@ -1,4 +1,4 @@
-from DatabaseSchema import Ban
+from DatabaseSchema import Ban, Server
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, select, URL, Engine, func
 from sqlalchemy.orm import Session
@@ -66,4 +66,8 @@ class DatabaseDriver():
 
   def GetNumBans(self) -> int:
     stmt = select(func.count()).select_from(Ban)
+    return self.Database.scalars(stmt).first() or 0
+    
+  def GetNumActivatedServers(self) -> int:
+    stmt = select(func.count()).select_from(Server).where(Server.activation_state==True)
     return self.Database.scalars(stmt).first() or 0
