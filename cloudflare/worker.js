@@ -30,7 +30,7 @@ export class APILookup extends WorkerEntrypoint {
     let accountPostfix = "";
     if (account !== undefined)
       accountPostfix = `/${account}`;
-    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/${type}${accountPostfix}`), this.ctx);
+    const request = await fetchCacheOrOrigin(this.makeRequest(`https://${this.env.entrypoint_origin}/${type}${accountPostfix}`), this.ctx);
     if (request.ok)
       return await request.json();
     else
@@ -72,10 +72,10 @@ export default class extends WorkerEntrypoint {
       // Make sure it's in the right format of Bearer <token>
       if (tokenHolder.length >= 2) {
         // Check if this token exists
-        let task = await this.env.TOKEN_LIST.get(tokenHolder[1]);
+        let onAuthList = await this.env.TOKEN_LIST.get(tokenHolder[1]);
 
         // Key is valid!
-        if (task)
+        if (onAuthList)
           return await fetchCacheOrOrigin(request, this.ctx);
       }
     }

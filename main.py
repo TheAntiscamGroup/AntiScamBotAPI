@@ -12,20 +12,21 @@ from datetime import datetime
 # Application Config
 service_name = "ScamGuard"
 host_name = "scamguard.app"
+auth_tag = "requires_auth"
 api_host_name = f"api.{host_name}"
 contact_url = f"https://{host_name}/contact"
-license_url = "https://github.com/theantiscamgroup/AntiScamBotAPI/blob/main/LICENSE"
+license_url = "https://theantiscamgroup.com/AntiScamBotAPI/blob/main/LICENSE"
 
 # API Naming Config
 global_title = f"{service_name} API"
-global_version = "1.1.6"
+global_version = "1.1.7"
 global_summary = f"An API for interfacing with {service_name} data"
 global_description = f"""
 # Info
 
 This API allows you to interface and query operational information about {service_name}'s database!
 
-**NOTE**: all API calls require an `Authorization: Bearer <token>` header, otherwise the request will fail.
+**NOTE**: Any API route with the "{auth_tag}" tag requires an `Authorization: Bearer <token>` header, otherwise the request will fail.
 
 If you would like to obtain an API Token, please send a message in the `#api-requests` channel of the [{service_name} Discord server](https://{host_name}/discord).
 
@@ -94,12 +95,11 @@ class APIBans(BaseAPIResponse):
     self.count = db.GetNumBans()
     return self
 
-class APIStats(APIBans):
+class APIStats(BaseAPIResponse):
   activations: int = 0
   installs: int = 0
 
   def Execute(self):
-    super().Execute()
     self.activations = db.GetNumActivatedServers()
     self.installs = db.GetNumServers()
     return self
@@ -129,19 +129,19 @@ async def docs_output(_req: Request):
       swagger_ui_parameters=app.swagger_ui_parameters,
   )
 
-@app.get("/check/{user_id}", description="Check if a Discord UserID is banned", response_model=APIBan, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
+@app.get("/check/{user_id}", description="Check if a Discord UserID is banned", tags=[auth_tag], response_model=APIBan, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
 def check_ban(user_id: int):
   return APIBan().Create(user_id).Execute()
 
-@app.get("/ban/{user_id}", description="Get extensive information as to an UserID being banned", response_model=APIBanDetailed, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
+@app.get("/ban/{user_id}", description="Get extensive information as to an UserID being banned", tags=[auth_tag], response_model=APIBanDetailed, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
 def get_ban_info(user_id: int):
   return APIBanDetailed().Create(user_id).Execute()
 
-@app.get("/bans", description="Get Number of All Bans", deprecated=True, response_model=APIBans, responses={403: {"model": APIAuthError}})
+@app.get("/bans", description="Get Number of All Bans", tags=[auth_tag], response_model=APIBans, responses={403: {"model": APIAuthError}})
 def get_ban_stats():
    return APIBans().Execute()
 
-@app.get("/stats", description="Get Bot Stats", response_model=APIStats, responses={403: {"model": APIAuthError}})
+@app.get("/stats", description="Get Bot Runtime Stats", response_model=APIStats)
 def get_bot_stats():
    return APIStats().Execute()
 

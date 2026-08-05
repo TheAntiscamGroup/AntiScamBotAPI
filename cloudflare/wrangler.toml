@@ -10,11 +10,16 @@ enabled = false
 head_sampling_rate = 0.5
 
 [vars]
+# If authentication is required to access the API
 REQUIRE_AUTH = "true"
+
+# The entry point to use when using the service worker
+entrypoint_origin="api.scamguard.app"
 
 [[kv_namespaces]]
 binding = "TOKEN_LIST"
 id = "6b2fc82222f24d07b37400a3fd752cab"
 
+# close to DigitalOcean SFO servers
 [placement]
 region = "aws:us-west-1"
