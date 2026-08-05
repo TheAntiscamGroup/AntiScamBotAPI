@@ -71,3 +71,8 @@ class DatabaseDriver():
   def GetNumActivatedServers(self) -> int:
     stmt = select(func.count()).select_from(Server).where(Server.activation_state==True)
     return self.Database.scalars(stmt).first() or 0
+
+  def GetNumServers(self) -> int:
+    stmt = select(func.count()).select_from(Server)
+    return self.Database.scalars(stmt).first() or 0
+
