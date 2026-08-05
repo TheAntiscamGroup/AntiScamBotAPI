@@ -26,28 +26,33 @@ export class APILookup extends WorkerEntrypoint {
       "Authorization": `Bearer ${this.env.SERVICE_LOOKUP_KEY}`
     }});
   };
-  async makeSGRequest(type, account) {
-    if (account == "" || account == "0") {
-      return {valid: false};
-    }
-    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/${type}/${account}`), this.ctx);
+  async makeSGRequest(type, account=undefined) {
+    let accountPostfix = "";
+    if (account !== undefined)
+      accountPostfix = `/${account}`;
+    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/${type}${accountPostfix}`), this.ctx);
     if (request.ok)
       return await request.json();
     else
       return {valid: false, error: true, status: request.status, code: request.code};
   }
   async checkAccount(account) {
+    if (account == "" || account == "0") {
+      return {valid: false};
+    }
     return await this.makeSGRequest("check", account);
   };
   async getBanDetails(account) {
+    if (account == "" || account == "0") {
+      return {valid: false};
+    }
     return await this.makeSGRequest("ban", account);
   };
   async getBanStats() {
-    const request = await fetchCacheOrOrigin(this.makeRequest(`https://api.scamguard.app/bans`), this.ctx);
-    if (request.ok)
-      return await request.json();
-    else
-      return {error: true, status: request.status, code: request.code };
+    return await this.makeSGRequest("bans");
+  };
+  async getAppStats() {
+    return await this.makeSGRequest("stats");
   };
 };
 
