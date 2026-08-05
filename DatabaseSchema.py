@@ -16,3 +16,9 @@ class Ban(Base):
   created_at = mapped_column(DateTime(), server_default=func.now())
   updated_at = mapped_column(DateTime(), server_default=func.now(), onupdate=func.now())
   evidence_thread = mapped_column(Integer, nullable=True, server_default=null())
+
+class Server(Base):
+  __tablename__ = "servers"
+
+  id = mapped_column(Integer, primary_key=True, autoincrement=True)
+  activation_state = mapped_column(Integer, server_default="0")
