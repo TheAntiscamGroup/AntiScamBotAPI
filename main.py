@@ -95,11 +95,13 @@ class APIBans(BaseAPIResponse):
     return self
 
 class APIStats(APIBans):
+  activations: int = 0
   installs: int = 0
 
   def Execute(self):
     super().Execute()
-    self.installs = 0
+    self.activations = db.GetNumActivatedServers()
+    self.installs = db.GetNumServers()
     return self
 
 class APIAuthError(BaseAPIResponse):
