@@ -9,6 +9,8 @@ from DatabaseSchema import Ban
 from pydantic import BaseModel
 from datetime import datetime
 
+global_version = "1.1.9"
+
 # Application Config
 service_name = "ScamGuard"
 host_name = "scamguard.app"
@@ -19,7 +21,6 @@ license_url = "https://theantiscamgroup.com/AntiScamBotAPI/blob/main/LICENSE"
 
 # API Naming Config
 global_title = f"{service_name} API"
-global_version = "1.1.8"
 global_summary = f"An API for interfacing with {service_name} data"
 global_description = f"""
 # Info
@@ -33,9 +34,10 @@ If you would like to obtain an API Token, please send a message in the `#api-req
 """
 
 
-app = FastAPI(redoc_url=None, docs_url=None, openapi_url="/openapi.json", description=global_description, title=global_title, summary=global_summary,
+app = FastAPI(redoc_url=None, docs_url=None, openapi_url="/openapi.json",
+              description=global_description, title=global_title, summary=global_summary,
               contact={"name":"Support Contact", "url":contact_url}, terms_of_service=f"https://{host_name}/terms",
-              license_info={"name":"MIT", "url":f"https://{api_host_name}/license"},
+              license_info={"name":"MIT", "url":license_url},
               servers=[{"url": f"https://{api_host_name}", "description": "Production API"}], version=global_version)
 
 db = DatabaseDriver()
@@ -130,19 +132,22 @@ async def docs_output(_req: Request):
       swagger_ui_parameters=app.swagger_ui_parameters,
   )
 
-@app.get("/check/{user_id}", description="Check if a Discord UserID is banned", tags=[auth_tag], response_model=APIBan, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
+@app.get("/check/{user_id}", description="Check if a Discord UserID is banned", tags=[auth_tag],
+         response_model=APIBan, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
 def check_ban(user_id: int):
   return APIBan().Create(user_id).Execute()
 
-@app.get("/ban/{user_id}", description="Get extensive information as to an UserID being banned", tags=[auth_tag], response_model=APIBanDetailed, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
+@app.get("/ban/{user_id}", description="Get extensive information as to an UserID being banned", tags=[auth_tag],
+         response_model=APIBanDetailed, responses={403: {"model": APIAuthError}, 422: {"model": APIInvalidData}})
 def get_ban_info(user_id: int):
   return APIBanDetailed().Create(user_id).Execute()
 
-@app.get("/bans", description="Get Number of All Bans", tags=[auth_tag], deprecated=True, response_model=APIBans, responses={403: {"model": APIAuthError}})
+@app.get("/bans", description="Get Number of All Bans", tags=[auth_tag], deprecated=True,
+         response_model=APIBans, responses={403: {"model": APIAuthError}})
 def get_ban_stats():
    return APIBans().Execute()
 
-@app.get("/stats", description="Get Bot Runtime Stats", response_model=APIStats)
+@app.get("/stats", description="Get Bot Runtime Stats", tags=["public"], response_model=APIStats)
 def get_bot_stats():
    return APIStats().Execute()
 
@@ -158,7 +163,3 @@ async def validation_exception_handler(request, exc: RequestValidationError):
 @app.get('/openapi.json', include_in_schema=False)
 async def openapi():
   return FileResponse("openapi.json")
-
-@app.get('/license', include_in_schema=False)
-async def license():
-  return RedirectResponse(url=license_url)
