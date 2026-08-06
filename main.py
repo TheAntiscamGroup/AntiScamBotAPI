@@ -97,12 +97,14 @@ class APIBans(BaseAPIResponse):
     self.count = db.GetNumBans()
     return self
 
-class APIStats(APIBans):
+class APIStats(BaseAPIResponse):
   activations: int = 0
   installs: int = 0
+  ban_count: int = 0
 
   def Execute(self):
-    super().Execute()
+    self.valid = True
+    self.ban_count = db.GetNumBans()
     self.activations = db.GetNumActivatedServers()
     self.installs = db.GetNumServers()
     return self
