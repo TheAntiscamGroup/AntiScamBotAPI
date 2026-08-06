@@ -7,7 +7,7 @@ on:
       - "*.py"
       - "requirements.txt"
       - ".runtime/**"
-      - ".github/workflows/filters.yml"
+      - ".github/filters.yml"
       - ".github/workflows/deploy.yml"
 
   workflow_dispatch:
@@ -47,12 +47,9 @@ jobs:
   cache_kill:
     needs: deploy
     if: ${{ needs.deploy.outputs.restarted == 'true' }}
-    name: Clear Cache if Restarted
+    name: Clear CF Cache if Restarted
     uses: theantiscamgroup/workflows/.github/workflows/clear_cache.yml@main
     secrets: inherit
-    with:
-      paths: |
-        "https://api.scamguard.app/openapi.json"
 
   # This will wait conditionally for the cache to be ready after the bot has been deployed
   # If it hasn't been redeployed, then it will continue immediately.
@@ -60,20 +57,19 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     continue-on-error: true
+    if: ${{ needs.deploy.outputs.restarted == 'true' }}
     name: Wait
     steps:
         # Sleep if we were restarted
       - name: Sleep
-        if: ${{ needs.deploy.outputs.restarted == 'true' }}
-        run: sleep 60
-      - name: Continue
-        run: echo "Done Waiting!"
+        run: sleep 10
 
   make_openapi:
     name: OpenAPI
     # This way we do not get stuck if the bot wasn't restarted
     # So we can always have the most up to date spec
     needs: wait_for_cache
+    if: ${{ needs.wait_for_cache.result == 'success' }}
     uses: theantiscamgroup/workflows/.github/workflows/build_openapi.yml@main
     secrets: inherit
     with:
