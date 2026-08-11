@@ -5,14 +5,14 @@ from sqlalchemy.orm import Session
 from typing import cast
 import os
 
-load_dotenv()
+_= load_dotenv()
 
 # Mostly based off of the ScamGuard Database Class
 class DatabaseDriver():
-  Database:Session = None # pyright: ignore[reportAssignmentType]
+  Database:Session|None = None
 
   ### Initialization/Teardown ###
-  def __init__(self, *args, **kwargs):
+  def __init__(self, *args, **kwargs):   # pyright: ignore[reportUnknownParameterType, reportMissingParameterType]
     self.Open()
 
   def __del__(self):
@@ -31,9 +31,12 @@ class DatabaseDriver():
     self.Database = Session(create_engine(database_url))
 
   def Close(self):
+    if (self.Database is None):
+      return
+
     if (self.IsConnected()):
       cast(Engine, self.Database.get_bind()).dispose()
-      self.Database = None # pyright: ignore[reportAttributeAccessIssue]
+      self.Database = None
 
   def IsConnected(self) -> bool:
     if (self.Database is not None):
@@ -46,6 +49,9 @@ class DatabaseDriver():
 
   ### Lookup Data ###
   def DoesBanExist(self, TargetId:int) -> bool:
+    if (self.Database is None):
+      return False
+
     if (TargetId <= 0):
       return False
 
@@ -58,6 +64,9 @@ class DatabaseDriver():
     return True
 
   def GetBanInfo(self, TargetId:int) -> Ban|None:
+    if (self.Database is None):
+      return None
+
     if (TargetId <= 0):
       return None
 
@@ -65,14 +74,23 @@ class DatabaseDriver():
     return self.Database.scalars(stmt).first()
 
   def GetNumBans(self) -> int:
+    if (self.Database is None):
+      return 0
+
     stmt = select(func.count()).select_from(Ban)
     return self.Database.scalars(stmt).first() or 0
-    
+
   def GetNumActivatedServers(self) -> int:
+    if (self.Database is None):
+      return 0
+
     stmt = select(func.count()).select_from(Server).where(Server.activation_state==True)
     return self.Database.scalars(stmt).first() or 0
 
   def GetNumServers(self) -> int:
+    if (self.Database is None):
+      return 0
+
     stmt = select(func.count()).select_from(Server)
     return self.Database.scalars(stmt).first() or 0
 
