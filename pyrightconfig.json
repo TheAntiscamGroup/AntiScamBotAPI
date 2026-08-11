@@ -1,0 +1,15 @@
+{
+  "include": [
+    "*.py"
+  ],
+
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    ".runtime/**",
+    ".github/**"
+  ],
+
+  "reportDeprecated": false,
+  "reportAny": "information"
+}

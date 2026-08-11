@@ -3,13 +3,13 @@ from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from typing import Union
+from typing import Self, Union, override
 from DatabaseDriver import DatabaseDriver
 from DatabaseSchema import Ban
 from pydantic import BaseModel
 from datetime import datetime
 
-global_version = "1.1.9"
+global_version = "1.1.10"
 
 # Application Config
 service_name = "ScamGuard"
@@ -44,9 +44,12 @@ db = DatabaseDriver()
 
 class BaseAPIResponse(BaseModel):
   valid: bool = False
+  def Execute(self) -> Self:
+    return self
 
 class APIBan(BaseAPIResponse):
   banned: bool = False
+  valid: bool = False
   user_id: int = 0
   user_id_str: str = ""
 
@@ -57,6 +60,7 @@ class APIBan(BaseAPIResponse):
       self.user_id_str = str(user_id)
     return self
 
+  @override
   def Execute(self):
     return self.ExecuteOnData(db.GetBanInfo(self.user_id))
 
@@ -70,28 +74,32 @@ class APIBanDetailed(APIBan):
   evidence_thread: Union[int, None] = None
   evidence_thread_str: Union[str, None] = None
 
+  @override
   def Create(self, user_id:int=0):
-    super().Create(user_id)
+    _= super().Create(user_id)
     self.banned_on = None
     self.banned_by = ""
     self.evidence_thread = None
     return self
 
+  @override
   def Execute(self):
     BanInfo:Ban|None = db.GetBanInfo(self.user_id)
-    super().ExecuteOnData(BanInfo)
+    _= super().ExecuteOnData(BanInfo)
 
     if self.banned and BanInfo is not None:
       self.banned_on = BanInfo.created_at
       self.evidence_thread = BanInfo.evidence_thread
-      self.evidence_thread_str = str(self.evidence_thread)
+      self.evidence_thread_str = str(self.evidence_thread) if self.evidence_thread is not None else ""
       self.banned_by = BanInfo.assigner_discord_user_name
 
     return self
 
 class APIBans(BaseAPIResponse):
   count: int = 0
+  valid: bool = False
 
+  @override
   def Execute(self):
     self.valid = True
     self.count = db.GetNumBans()
@@ -101,7 +109,9 @@ class APIStats(BaseAPIResponse):
   activations: int = 0
   installs: int = 0
   ban_count: int = 0
+  valid: bool = False
 
+  @override
   def Execute(self):
     self.valid = True
     self.ban_count = db.GetNumBans()
@@ -109,6 +119,7 @@ class APIStats(BaseAPIResponse):
     self.installs = db.GetNumServers()
     return self
 
+# Handled by the Cloudflare front
 class APIAuthError(BaseAPIResponse):
   msg: str = "Invalid Auth Key Provided"
 
@@ -116,9 +127,10 @@ class APIInvalidData(BaseAPIResponse):
   msg: str = "Provided data was invalid"
   details: Union[str, None] = None
 
-  def Execute(self, data: str):
+  def __init__(self, data: str):
+    super().__init__()
     self.details = data
-    return self
+
 
 @app.get("/", include_in_schema=False, response_class=RedirectResponse, status_code=302)
 def main():
@@ -155,11 +167,11 @@ def get_bot_stats():
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc: RequestValidationError):
+async def validation_exception_handler(_request: Request, exc: RequestValidationError):
   message = ""
   for error in exc.errors():
       message += f"[Field: {error['loc']}, Error: {error['msg']}] "
-  ErrObj = jsonable_encoder(APIInvalidData().Execute(message))
+  ErrObj = jsonable_encoder(APIInvalidData(message).Execute())
   return JSONResponse(content=ErrObj, status_code=422)
 
 @app.get('/openapi.json', include_in_schema=False)
