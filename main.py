@@ -35,7 +35,7 @@ If you would like to obtain an API Token, please send a message in the `#api-req
 
 
 app = FastAPI(redoc_url=None, docs_url=None, openapi_url="/openapi.json",
-              description=global_description, title=global_title, summary=global_summary,
+              description=global_description, title=global_title, openapi_version="3.0.3", summary=global_summary,
               contact={"name":"Support Contact", "url":contact_url}, terms_of_service=f"https://{host_name}/terms",
               license_info={"name":"MIT", "url":license_url},
               servers=[{"url": f"https://{api_host_name}", "description": "Production API"}], version=global_version)
