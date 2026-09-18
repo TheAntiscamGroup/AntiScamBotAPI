@@ -1,4 +1,5 @@
-import { WorkerEntrypoint } from "cloudflare:workers";
+import { WorkerEntrypoint, env as fetchEnv } from "cloudflare:workers";
+import { addMinutes } from "date-fns";
 
 // Function for getting a request from the cache or going to origin.
 async function fetchCacheOrOrigin(request, ctx) {
@@ -11,9 +12,12 @@ async function fetchCacheOrOrigin(request, ctx) {
   if (!response) {
     // Fetch the request.
     response = await fetch(request, );
-    console.log(`Fetching Origin for Cache ${cacheUrl.toString()}`);
-    // Cache it
+    // Create the response
     response = new Response(response.body, response);
+    // Add expiration (20 minutes)
+    response.headers.set("Expires", addMinutes(new Date(), Number(fetchEnv.CACHE_TIME_LENGTH)).toUTCString());
+    response.headers.set("Cache-Tag", "api-worker");
+    // Cache clone it
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
   }
 

@@ -15,5 +15,8 @@
     "miniflare": {
       "sharp": "^0.35.4"
     }
+  },
+  "dependencies": {
+    "date-fns": "^4.4.0"
   }
 }

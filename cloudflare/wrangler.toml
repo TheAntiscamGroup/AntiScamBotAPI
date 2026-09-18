@@ -24,5 +24,8 @@ required=["SERVICE_LOOKUP_KEY"]
 # If authentication is required to access the API
 REQUIRE_AUTH = "true"
 
+# How long in minutes should API responses be cached
+CACHE_TIME_LENGTH="20"
+
 # The entry point to use when using the service worker
 entrypoint_origin="api.scamguard.app"
