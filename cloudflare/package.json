@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "devDependencies": {
-    "wrangler": "^4.130.0"
+    "wrangler": "^4.136.1"
   },
   "overrides": {
     "@actions/github": {
@@ -11,9 +11,6 @@
     },
     "@actions/http-client": {
       "undici": "^7.29.0"
-    },
-    "miniflare": {
-      "sharp": "^0.35.4"
     }
   },
   "dependencies": {
