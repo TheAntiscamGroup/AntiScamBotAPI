@@ -19,6 +19,10 @@ api_host_name = f"api.{host_name}"
 contact_url = f"https://{host_name}/contact"
 license_url = "https://theantiscamgroup.com/AntiScamBotAPI/blob/main/LICENSE"
 
+# Rate limits
+rate_limit_requests = 1000
+rate_limit_time = "10s"
+
 # API Naming Config
 global_title = f"{service_name} API"
 global_summary = f"An API for interfacing with {service_name} data"
@@ -27,7 +31,15 @@ global_description = f"""
 
 This API allows you to interface and query operational information about {service_name}'s database!
 
-**NOTE**: Any API route with the "{auth_tag}" tag requires an `Authorization: Bearer <token>` header, otherwise the request will fail.
+## Making requests
+
+1. Any API route with the `{auth_tag}` tag requires an `Authorization: Bearer <token>` header, otherwise the request will fail.
+
+2. Current Rate Limits: ~{rate_limit_requests} requests/{rate_limit_time}. These values may change without notice or announcement.
+
+3. It is recommended (not required) to make requests with an `User-Agent` string. This will prevent the firewall from blocking your requests.
+
+---
 
 If you would like to obtain an API Token, please send a message in the `#api-requests` channel of the [{service_name} Discord server](https://{host_name}/discord).
 
