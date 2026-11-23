@@ -65,7 +65,7 @@ export default class extends WorkerEntrypoint {
     // Check if authorization is enabled
     const authRequired = (this.env.REQUIRE_AUTH === "true");
     if (authRequired === false) {
-      return fetchCacheOrOrigin(request, this.ctx);
+      return await fetchCacheOrOrigin(request, this.ctx);
     }
 
     // Check for Auth Header
